@@ -1,0 +1,36 @@
+{
+    "name": "hotrush/quickbooks-manager",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "hotrush",
+            "email": "johny64@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "quickbooks/v3-php-sdk": "^5.0",
+        "illuminate/support": "~5"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.0",
+        "phpunit/phpunit": "^7.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hotrush\\QuickBooksManager\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Hotrush\\QuickBooksManager\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Hotrush\\QuickBooksManager\\QuickBooksManagerServiceProvider"
+            ]
+        }
+    }
+}

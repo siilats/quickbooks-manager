@@ -5,18 +5,48 @@ namespace Hotrush\QuickBooksManager\Http\Controllers;
 use Hotrush\QuickBooksManager\Http\Requests\AuthCallbackRequest;
 use Hotrush\QuickBooksManager\QuickBooksManager;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
-    public function callback($connection, AuthCallbackRequest $request, QuickBooksManager $manager)
-    {
-        $manager->connection($connection)->handleAuthorizationCallback($request);
+    /**
+     * @var QuickBooksManager
+     */
+    protected $manager;
 
-        return redirect(
-            Session::has(config('quickbooks_manager.session_redirect_key'))
-                ? Session::get(config('quickbooks_manager.session_redirect_key'))
-                : route(config('quickbooks_manager.default_redirect_route'))
-        );
+    /**
+     * AuthController constructor.
+     *
+     * @param QuickBooksManager $manager
+     */
+    public function __construct(QuickBooksManager $manager)
+    {
+        $this->manager = $manager;
+    }
+
+    /**
+     * Redirect to OAuth authorization page.
+     *
+     * @param null $connection
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function redirect($connection = null)
+    {
+        return redirect($this->manager->connection($connection)->getAuthorizationRedirectUrl());
+    }
+
+    /**
+     * Authorization callback handle.
+     *
+     * @param AuthCallbackRequest $request
+     * @param null $connection
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \QuickBooksOnline\API\Exception\SdkException
+     * @throws \QuickBooksOnline\API\Exception\ServiceException
+     */
+    public function callback(AuthCallbackRequest $request, $connection = null)
+    {
+        $this->manager->connection($connection)->handleAuthorizationCallback($request);
+
+        return redirect(route(config('quickbooks_manager.redirect_route')));
     }
 }

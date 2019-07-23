@@ -2,7 +2,6 @@
 
 namespace Hotrush\QuickBooksManager;
 
-use Hotrush\QuickBooksManager\Exception\AuthorizationRequired;
 use Hotrush\QuickBooksManager\Http\Requests\AuthCallbackRequest;
 use QuickBooksOnline\API\Core\OAuth\OAuth2\OAuth2AccessToken;
 use QuickBooksOnline\API\DataService\DataService;
@@ -20,33 +19,31 @@ class QuickBooksConnection
     private $config;
 
     /**
+     * @var QuickBooksToken
+     */
+    private $token;
+
+    /**
      * @var DataService
      */
     private $client;
 
     /**
      * QuickBooksConnection constructor.
-     *
      * @param $name
      * @param array $config
-     * @throws AuthorizationRequired
      */
     public function __construct($name, array $config)
     {
         $this->name = $name;
         $this->config = $config;
+        $this->token = $this->loadTokenFromDatabase();
 
         $this->initClient();
     }
 
     private function initClient()
     {
-        $token = $this->loadTokenFromDatabase();
-
-        if (!$token || !$token->isRefreshable()) {
-            throw new AuthorizationRequired();
-        }
-
         $this->client = DataService::Configure([
             'auth_mode' => 'oauth2',
             'ClientID' => $this->config['client_id'],
@@ -54,13 +51,13 @@ class QuickBooksConnection
             'RedirectURI' => route(config('quickbooks_manager.callback_route'), ['connection' => $this->name]),
             'scope' => $this->config['scope'],
             'baseUrl' => $this->config['base_url'],
-            'accessTokenKey' => $token->access_token,
-            'refreshTokenKey' => $token->refresh_token,
+            'accessTokenKey' => $this->token ? $this->token->access_token : null,
+            'refreshTokenKey' => $this->token ? $this->token->refresh_token : null,
         ])
             ->setLogLocation($this->config['logs_path'])
             ->throwExceptionOnError(true);
 
-        if ($token->isExpired()) {
+        if ($this->token->isExpired()) {
             $this->refreshToken();
         }
     }
@@ -101,7 +98,6 @@ class QuickBooksConnection
     }
 
     /**
-     * @todo maybe own exception
      * @throws \QuickBooksOnline\API\Exception\ServiceException
      */
     private function refreshToken()
@@ -118,7 +114,7 @@ class QuickBooksConnection
     {
         $this->client->updateOAuth2Token($accessToken);
 
-        QuickBooksToken::createFromToken($this->name, $accessToken);
+        $this->token = QuickBooksToken::createFromToken($this->name, $accessToken);
     }
 
     /**

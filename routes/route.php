@@ -1,3 +1,19 @@
 <?php
 
-Route::get('/qbm/callback/{connection}', ['as' => 'qbm.callback', 'uses' => 'AuthController@callback']);
+Route::namespace('Hotrush\QuickBooksManager\Http\Controllers')
+    ->name('qbm.')
+    ->prefix('qbm')
+    ->group(function () {
+        Route::get('redirect/{connection?}', [
+            'as' => 'redirect',
+            'uses' => 'AuthController@redirect'
+        ]);
+        Route::get('callback/{connection?}', [
+            'as' => 'callback',
+            'uses' => 'AuthController@callback'
+        ]);
+        Route::get('webhook/{connection?}', [
+            'as' => 'webhook',
+            'uses' => 'WebhookController@handle'
+        ]);
+    });

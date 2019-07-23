@@ -6,11 +6,9 @@ return [
 
     'logs_path' => storage_path('logs'),
 
-    'session_redirect_key' => 'qbm_redirect_back',
-
     'callback_route' => 'qbm.callback',
 
-    'default_redirect_route' => 'app.home',
+    'redirect_route' => 'app.home',
 
     'connections' => [
 

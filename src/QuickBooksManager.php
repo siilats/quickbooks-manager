@@ -32,7 +32,6 @@ class QuickBooksManager
      *
      * @param null $name
      * @return QuickBooksConnection
-     * @throws Exception\AuthorizationRequired
      */
     public function connection($name = null)
     {
@@ -44,7 +43,6 @@ class QuickBooksManager
     /**
      * @param $name
      * @return QuickBooksConnection
-     * @throws Exception\AuthorizationRequired
      */
     protected function get($name)
     {
@@ -56,7 +54,6 @@ class QuickBooksManager
      *
      * @param $name
      * @return QuickBooksConnection
-     * @throws Exception\AuthorizationRequired
      */
     protected function resolve($name)
     {

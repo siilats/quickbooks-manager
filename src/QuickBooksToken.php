@@ -13,6 +13,8 @@ class QuickBooksToken extends Model
         'connection', 'access_token', 'refresh_token', 'issued_at', 'expire_at', 'refresh_expire_at'
     ];
 
+    public $timestamps = false;
+
     protected $dates = [
         'issued_at', 'expire_at', 'refresh_expire_at',
     ];

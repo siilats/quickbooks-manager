@@ -18,6 +18,12 @@ class WebhookController extends Controller
      */
     public function handle(QuickBooksWebhookManager $manager, Request $request, $connection = null)
     {
+        $manager->logWebhook($request, $connection);
+
+        if (!$manager->validateWebhook($request, $connection)) {
+            return;
+        }
+
         foreach ($request->input('eventNotifications') as $realm) {
             foreach ($realm['dataChangeEvent']['entities'] as $entity) {
                 event($manager->createEntityEvent(

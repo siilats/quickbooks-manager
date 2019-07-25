@@ -57,7 +57,7 @@ class QuickBooksConnection
             ->setLogLocation($this->config['logs_path'])
             ->throwExceptionOnError(true);
 
-        if ($this->token->isExpired()) {
+        if ($this->token && $this->token->isExpired()) {
             $this->refreshToken();
         }
     }

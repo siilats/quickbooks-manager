@@ -81,7 +81,7 @@ class QuickBooksConnection
             ->getOAuth2LoginHelper()
             ->exchangeAuthorizationCodeForToken(
                 $request->get('code'),
-                $request->get('realmid')
+                $request->get('realmId')
             );
 
         $this->updateAccessToken($accessToken);

@@ -15,7 +15,7 @@ class AuthCallbackRequest extends FormRequest
     {
         return [
             'code' => 'required',
-            'realmid' => 'required', // ?!?!?!
+            'realmId' => 'required', // ?!?!?!
         ];
     }
 }

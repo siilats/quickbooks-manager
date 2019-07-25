@@ -31,7 +31,7 @@ php artisan vendor:publish --provider="Hotrush\QuickBooksManager\QuickBooksManag
 To redirect to OAuth authorization page use `qbm.redirect` route e.g.:
 
 ```php
-redirect(route('qmb.redirect', ['connection' => 'default']));
+redirect(route('qbm.redirect', ['connection' => 'default']));
 ```
 
 On successful auth token will be stored in the database and used automatically for API requests. You can configure redirect-back route for success authorization in config file changing `redirect_route` option.

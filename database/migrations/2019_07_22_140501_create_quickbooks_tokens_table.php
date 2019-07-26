@@ -16,7 +16,7 @@ class CreateQuickbooksTokensTable extends Migration
         Schema::create('quickbooks_tokens', function(Blueprint $table) {
             $table->increments('id');
             $table->string('connection');
-            $table->string('access_token')->nullable();
+            $table->text('access_token')->nullable();
             $table->string('refresh_token')->nullable();
             $table->timestamp('issued_at')->nullable();
             $table->timestamp('expire_at')->nullalbe();

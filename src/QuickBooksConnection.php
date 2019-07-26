@@ -54,7 +54,7 @@ class QuickBooksConnection
             'accessTokenKey' => $this->token && !$this->token->isExpired() ? $this->token->access_token : null,
             'refreshTokenKey' => $this->token && $this->token->isExpired() && $this->token->isRefreshable() ? $this->token->refresh_token : null,
         ])
-            ->setLogLocation($this->config['logs_path'])
+            ->setLogLocation(config('quickbooks_manager.logs_path'))
             ->throwExceptionOnError(true);
 
         if ($this->token && $this->token->isExpired()) {

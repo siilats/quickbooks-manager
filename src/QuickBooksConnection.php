@@ -43,7 +43,7 @@ class QuickBooksConnection
         $this->initClient();
     }
 
-    private function initClient()
+    private function initClient($forceRefresh = false)
     {
         $this->client = DataService::Configure([
             'auth_mode' => 'oauth2',
@@ -54,12 +54,12 @@ class QuickBooksConnection
             'baseUrl' => $this->config['base_url'],
             'QBORealmID' => $this->token ? $this->token->realm_id : null,
             'accessTokenKey' => $this->token && !$this->token->isExpired() ? $this->token->access_token : null,
-            'refreshTokenKey' => $this->token && $this->token->isExpired() && $this->token->isRefreshable() ? $this->token->refresh_token : null,
+            'refreshTokenKey' => $this->token && ($this->token->isExpired() || $forceRefresh) && $this->token->isRefreshable() ? $this->token->refresh_token : null,
         ])
             ->setLogLocation(config('quickbooks_manager.logs_path'))
             ->throwExceptionOnError(true);
 
-        if ($this->token && $this->token->isExpired()) {
+        if ($this->token && ($this->token->isExpired() || $forceRefresh) && $this->token->isRefreshable()) {
             $this->refreshToken();
         }
     }
@@ -131,7 +131,7 @@ class QuickBooksConnection
             return $this->executeSdkMethod($method, $parameters);
         } catch (ServiceException $e) {
             if ($this->detectTokenError($e) && $this->token && $this->token->isRefreshable()) {
-                $this->refreshToken();
+                $this->initClient(true);
                 return $this->executeSdkMethod($method, $parameters);
             }
         }

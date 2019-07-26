@@ -51,8 +51,8 @@ class QuickBooksConnection
             'RedirectURI' => route(config('quickbooks_manager.callback_route'), ['connection' => $this->name]),
             'scope' => $this->config['scope'],
             'baseUrl' => $this->config['base_url'],
-            'accessTokenKey' => $this->token ? $this->token->access_token : null,
-            'refreshTokenKey' => $this->token ? $this->token->refresh_token : null,
+            'accessTokenKey' => $this->token && !$this->token->isExpired() ? $this->token->access_token : null,
+            'refreshTokenKey' => $this->token && $this->token->isExpired() && $this->token->isRefreshable() ? $this->token->refresh_token : null,
         ])
             ->setLogLocation($this->config['logs_path'])
             ->throwExceptionOnError(true);

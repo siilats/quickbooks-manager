@@ -51,6 +51,7 @@ class QuickBooksConnection
             'RedirectURI' => route(config('quickbooks_manager.callback_route'), ['connection' => $this->name]),
             'scope' => $this->config['scope'],
             'baseUrl' => $this->config['base_url'],
+            'QBORealmID' => $this->token ? $this->token->realm_id : null,
             'accessTokenKey' => $this->token && !$this->token->isExpired() ? $this->token->access_token : null,
             'refreshTokenKey' => $this->token && $this->token->isExpired() && $this->token->isRefreshable() ? $this->token->refresh_token : null,
         ])

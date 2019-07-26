@@ -18,6 +18,7 @@ class CreateQuickbooksTokensTable extends Migration
             $table->string('connection');
             $table->text('access_token')->nullable();
             $table->string('refresh_token')->nullable();
+            $table->string('realm_id')->nullable();
             $table->timestamp('issued_at')->nullable();
             $table->timestamp('expire_at')->nullable();
             $table->timestamp('refresh_expire_at')->nullable();

@@ -10,7 +10,7 @@ class QuickBooksToken extends Model
     protected $table = 'quickbooks_tokens';
 
     protected $fillable = [
-        'connection', 'access_token', 'refresh_token', 'issued_at', 'expire_at', 'refresh_expire_at'
+        'connection', 'access_token', 'refresh_token', 'realm_id', 'issued_at', 'expire_at', 'refresh_expire_at'
     ];
 
     public $timestamps = false;
@@ -38,6 +38,7 @@ class QuickBooksToken extends Model
             'connection' => $connection,
             'access_token' => $token->getAccessToken(),
             'refresh_token' => $token->getRefreshToken(),
+            'realm_id' => $token->getRealmID(),
             'issued_at' => now(),
             'expire_at' => now()->addSeconds(3600),
             'refresh_expire_at' => now()->addSeconds(8726400),

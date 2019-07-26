@@ -5,6 +5,7 @@ namespace Hotrush\QuickBooksManager;
 use Hotrush\QuickBooksManager\Http\Requests\AuthCallbackRequest;
 use QuickBooksOnline\API\Core\OAuth\OAuth2\OAuth2AccessToken;
 use QuickBooksOnline\API\DataService\DataService;
+use QuickBooksOnline\API\Exception\ServiceException;
 
 class QuickBooksConnection
 {
@@ -119,12 +120,39 @@ class QuickBooksConnection
     }
 
     /**
-     * @param  string  $method
-     * @param  array  $parameters
+     * @param $method
+     * @param $parameters
      * @return mixed
+     * @throws ServiceException
      */
     public function __call($method, $parameters)
     {
+        try {
+            return $this->executeSdkMethod($method, $parameters);
+        } catch (ServiceException $e) {
+            if ($this->detectTokenError($e) && $this->token && $this->token->isRefreshable()) {
+                $this->refreshToken();
+                return $this->executeSdkMethod($method, $parameters);
+            }
+        }
+    }
+
+    /**
+     * @param $method
+     * @param $parameters
+     * @return mixed
+     */
+    private function executeSdkMethod($method, $parameters)
+    {
         return $this->client->$method(...$parameters);
+    }
+
+    /**
+     * @param ServiceException $e
+     * @return bool
+     */
+    private function detectTokenError(ServiceException $e)
+    {
+        return $e->getCode() === 401 && strpos($e->getMessage(), 'Token expired') !== false;
     }
 }

@@ -12,7 +12,7 @@ Route::namespace('Hotrush\QuickBooksManager\Http\Controllers')
             'as' => 'callback',
             'uses' => 'AuthController@callback'
         ]);
-        Route::get('webhook/{connection?}', [
+        Route::post('webhook/{connection?}', [
             'as' => 'webhook',
             'uses' => 'WebhookController@handle'
         ]);

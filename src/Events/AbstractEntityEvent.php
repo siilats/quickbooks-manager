@@ -2,8 +2,6 @@
 
 namespace Hotrush\QuickBooksManager\Events;
 
-use Carbon\Carbon;
-
 abstract class AbstractEntityEvent
 {
     /**
@@ -33,7 +31,7 @@ abstract class AbstractEntityEvent
     /**
      * The latest timestamp.
      *
-     * @var Carbon
+     * @var string
      */
     public $lastUpdated;
 

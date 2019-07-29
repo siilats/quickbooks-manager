@@ -88,7 +88,6 @@ class QuickBooksWebhookManager
     public function createEntityEvent($connection, $realmId, $operation, $entityName, $entityId, $lastUpdated, $deletedId)
     {
         $connection = $connection ?: $this->getDefaultConnection();
-        $lastUpdated = Carbon::createFromFormat(\DateTime::ISO8601, $lastUpdated);
         $eventClass = $this->getEventClass($operation);
 
         return new $eventClass($connection, $realmId, $entityName, $entityId, $lastUpdated, $deletedId);

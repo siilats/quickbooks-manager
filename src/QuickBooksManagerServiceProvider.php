@@ -2,6 +2,7 @@
 
 namespace Hotrush\QuickBooksManager;
 
+use Hotrush\QuickBooksManager\Commands\RefreshTokensCommand;
 use Illuminate\Support\ServiceProvider;
 
 class QuickBooksManagerServiceProvider extends ServiceProvider
@@ -11,6 +12,7 @@ class QuickBooksManagerServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->definePublishingGroups();
             $this->defineMigrations();
+            $this->defineCommands();
         }
 
         $this->loadRoutesFrom(__DIR__.'/../routes/route.php');
@@ -37,5 +39,10 @@ class QuickBooksManagerServiceProvider extends ServiceProvider
     private function defineMigrations()
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+    }
+
+    private function defineCommands()
+    {
+        $this->commands(RefreshTokensCommand::class);
     }
 }

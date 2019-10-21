@@ -10,7 +10,7 @@
     "require": {
         "php": ">=7.1",
         "quickbooks/v3-php-sdk": "^5.0",
-        "illuminate/support": "~5"
+        "illuminate/support": "~6"
     },
     "require-dev": {
         "orchestra/testbench": "~3.0",

@@ -39,9 +39,9 @@ class QuickBooksToken extends Model
             'access_token' => $token->getAccessToken(),
             'refresh_token' => $token->getRefreshToken(),
             'realm_id' => $token->getRealmID(),
-            'issued_at' => now(),
-            'expire_at' => now()->addSeconds(3600),
-            'refresh_expire_at' => now()->addSeconds(8726400),
+            'issued_at' =>  Carbon::parse($token->getAccessTokenExpiresAt())->addSecond(-$token->getAccessTokenValidationPeriodInSeconds()),
+            'expire_at' => Carbon::parse($token->getAccessTokenExpiresAt()),
+            'refresh_expire_at' => Carbon::parse($token->getRefreshTokenExpiresAt()),
         ]);
     }
 }

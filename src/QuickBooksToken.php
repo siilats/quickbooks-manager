@@ -4,6 +4,7 @@ namespace Hotrush\QuickBooksManager;
 
 use Illuminate\Database\Eloquent\Model;
 use QuickBooksOnline\API\Core\OAuth\OAuth2\OAuth2AccessToken;
+use Carbon\Carbon;
 
 class QuickBooksToken extends Model
 {

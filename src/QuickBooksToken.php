@@ -7,7 +7,7 @@ use QuickBooksOnline\API\Core\OAuth\OAuth2\OAuth2AccessToken;
 
 class QuickBooksToken extends Model
 {
-    protected $table = 'quickbooks_tokens';
+    protected $table = 'face_quickbooks_tokens';
 
     protected $fillable = [
         'connection', 'access_token', 'refresh_token', 'realm_id', 'issued_at', 'expire_at', 'refresh_expire_at'

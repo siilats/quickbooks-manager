@@ -76,3 +76,11 @@ Each event has next arguments:
 - `entityId` - changed entity id
 - `lastUpdated` - carbon-parsed date object
 - `deletedId` - the ID of the entity that was deleted and merged (only for Merge events)
+
+## Tokens refresh schedule
+
+Schedule refreshing in `App\Console\Kernel`. [Schedule docs](https://laravel.com/docs/5.8/scheduling#defining-schedules).
+
+```php
+$schedule->command(RefreshTokensCommand::class)->everyMinute();
+```

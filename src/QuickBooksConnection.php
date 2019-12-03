@@ -54,14 +54,10 @@ class QuickBooksConnection
             'baseUrl' => $this->config['base_url'],
             'QBORealmID' => $this->token ? $this->token->realm_id : null,
             'accessTokenKey' => $this->token && !$this->token->isExpired() ? $this->token->access_token : null,
-            'refreshTokenKey' => $this->token && ($this->token->isExpired() || $forceRefresh) && $this->token->isRefreshable() ? $this->token->refresh_token : null,
+            'refreshTokenKey' => $this->token && $forceRefresh && $this->token->isRefreshable() ? $this->token->refresh_token : null,
         ])
             ->setLogLocation(config('quickbooks_manager.logs_path'))
             ->throwExceptionOnError(true);
-
-        if ($this->token && ($this->token->isExpired() || $forceRefresh) && $this->token->isRefreshable()) {
-            $this->refreshToken();
-        }
     }
 
     /**
@@ -102,8 +98,10 @@ class QuickBooksConnection
     /**
      * @throws \QuickBooksOnline\API\Exception\ServiceException
      */
-    private function refreshToken()
+    public function refreshToken()
     {
+        $this->initClient(true);
+
         $accessToken = $this->client->getOAuth2LoginHelper()->refreshToken();
 
         $this->updateAccessToken($accessToken);
@@ -117,6 +115,8 @@ class QuickBooksConnection
         $this->client->updateOAuth2Token($accessToken);
 
         $this->token = QuickBooksToken::createFromToken($this->name, $accessToken);
+
+        QuickBooksToken::removeExpired($this->name, [$this->token->id]);
     }
 
     /**
@@ -127,32 +127,6 @@ class QuickBooksConnection
      */
     public function __call($method, $parameters)
     {
-        try {
-            return $this->executeSdkMethod($method, $parameters);
-        } catch (ServiceException $e) {
-            if ($this->detectTokenError($e) && $this->token && $this->token->isRefreshable()) {
-                $this->initClient(true);
-                return $this->executeSdkMethod($method, $parameters);
-            }
-        }
-    }
-
-    /**
-     * @param $method
-     * @param $parameters
-     * @return mixed
-     */
-    private function executeSdkMethod($method, $parameters)
-    {
         return $this->client->$method(...$parameters);
-    }
-
-    /**
-     * @param ServiceException $e
-     * @return bool
-     */
-    private function detectTokenError(ServiceException $e)
-    {
-        return $e->getCode() === 401 && strpos($e->getMessage(), 'Token expired') !== false;
     }
 }

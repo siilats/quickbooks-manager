@@ -84,3 +84,7 @@ Schedule refreshing in `App\Console\Kernel`. [Schedule docs](https://laravel.com
 ```php
 $schedule->command(RefreshTokensCommand::class)->everyMinute();
 ```
+
+## Token's database table
+
+Now you can configure token's table name, just change `table_name` in config file.

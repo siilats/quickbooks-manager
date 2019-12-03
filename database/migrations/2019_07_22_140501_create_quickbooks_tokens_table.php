@@ -13,7 +13,7 @@ class CreateQuickbooksTokensTable extends Migration
      */
     public function up()
     {
-        Schema::create('quickbooks_tokens', function(Blueprint $table) {
+        Schema::create($this->getTableName(), function(Blueprint $table) {
             $table->increments('id');
             $table->string('connection');
             $table->text('access_token')->nullable();
@@ -33,6 +33,11 @@ class CreateQuickbooksTokensTable extends Migration
      */
     public function down()
     {
-        Schema::drop('quickbooks_tokens');
+        Schema::drop($this->getTableName());
+    }
+
+    protected function getTableName()
+    {
+        return config('quickbooks_manager.table_name');
     }
 }

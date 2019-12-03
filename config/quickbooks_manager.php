@@ -14,6 +14,8 @@ return [
 
     'redirect_route' => 'app.home',
 
+    'table_name' => 'quickbooks_tokens',
+
     'connections' => [
 
         'default' => [

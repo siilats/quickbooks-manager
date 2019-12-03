@@ -4,14 +4,11 @@ namespace Hotrush\QuickBooksManager;
 
 use Illuminate\Database\Eloquent\Model;
 use QuickBooksOnline\API\Core\OAuth\OAuth2\OAuth2AccessToken;
+use Carbon\Carbon;
 
 class QuickBooksToken extends Model
 {
-    const TOKEN_LIFETIME = 3600;
-    const TOKEN_REFRESH_PERIOD = 3000;
-    const REFRESH_TOKEN_LIFETIME = 8726400;
-
-    protected $table = 'quickbooks_tokens';
+    const TOKEN_REFRESH_WINDOW = 600;
 
     protected $fillable = [
         'connection', 'access_token', 'refresh_token', 'realm_id',
@@ -23,6 +20,11 @@ class QuickBooksToken extends Model
     protected $dates = [
         'issued_at', 'expire_at', 'refresh_at', 'refresh_expire_at',
     ];
+
+    public function getTable()
+    {
+        return config('quickbooks_manager.table_name');
+    }
 
     /**
      * @return bool
@@ -47,10 +49,10 @@ class QuickBooksToken extends Model
             'access_token' => $token->getAccessToken(),
             'refresh_token' => $token->getRefreshToken(),
             'realm_id' => $token->getRealmID(),
-            'issued_at' => now(),
-            'expire_at' => now()->addSeconds(self::TOKEN_LIFETIME),
-            'refresh_at' => now()->addSeconds(self::TOKEN_REFRESH_PERIOD),
-            'refresh_expire_at' => now()->addSeconds(self::REFRESH_TOKEN_LIFETIME),
+            'issued_at' => Carbon::parse($token->getAccessTokenExpiresAt())->addSeconds(-$token->getAccessTokenValidationPeriodInSeconds()),
+            'expire_at' => Carbon::parse($token->getAccessTokenExpiresAt()),
+            'refresh_at' => Carbon::parse($token->getRefreshTokenExpiresAt())->addSeconds(-self::TOKEN_REFRESH_WINDOW),
+            'refresh_expire_at' => Carbon::parse($token->getRefreshTokenExpiresAt()),
         ]);
     }
 
